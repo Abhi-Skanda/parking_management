@@ -15,8 +15,8 @@ export async function createLot(input: {
   return rows[0];
 }
 
-// Active lots with live availability counts
-export async function listLotsWithAvailability(): Promise<LotWithAvailability[]> {
+// Lots with live availability counts (active only, unless includeInactive is true)
+export async function listLotsWithAvailability(includeInactive = false): Promise<LotWithAvailability[]> {
   const { rows } = await query<LotWithAvailability>(
     `SELECT l.*,
             COUNT(s.id)::int                                       AS total_slots,
@@ -24,9 +24,10 @@ export async function listLotsWithAvailability(): Promise<LotWithAvailability[]>
             COUNT(s.id) FILTER (WHERE s.status = 'occupied')::int  AS occupied_slots
      FROM parking_lots l
      LEFT JOIN parking_slots s ON s.lot_id = l.id
-     WHERE l.is_active = TRUE
+     WHERE ($1::boolean OR l.is_active = TRUE)
      GROUP BY l.id
-     ORDER BY l.name`
+     ORDER BY l.name`,
+    [includeInactive]
   );
   return rows;
 }

@@ -2,7 +2,9 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { pool } from "../pool.mjs";
+import { pool } from "../pool.ts";
+import { runSqlFiles } from "./run-sql.mjs";
+await runSqlFiles(["seed.sql"], "Seed data inserted");
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 

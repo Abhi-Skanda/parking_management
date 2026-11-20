@@ -2,7 +2,9 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { pool } from "../pool.mjs";
+import { pool } from "../pool.ts";
+import { runSqlFiles } from "./run-sql.mjs";
+await runSqlFiles(["schema.sql"], "Schema ready");
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const sqlFile = (file) => path.join(__dirname, "..", "sql", file);
@@ -21,3 +23,4 @@ async function setup() {
 }
 
 setup();
+
